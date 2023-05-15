@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/QLESS.TransportSystem.Api/.vs
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Api/obj
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Models/obj/Debug/net6.0
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Models/obj/Release/net6.0
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Repositories/obj/Debug/net6.0
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Repositories/obj/Release/net6.0
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Services/obj/Debug/net6.0
+/QLESS.TransportSystem.Api/QLESS.TransportSystem.Services/obj/Release/net6.0

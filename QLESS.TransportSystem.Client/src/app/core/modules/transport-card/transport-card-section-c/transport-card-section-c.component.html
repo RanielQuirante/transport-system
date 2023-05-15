@@ -1,0 +1,118 @@
+<main class="container">
+    <div style="height:50px; display: block;"></div>
+    <div class="p-4 p-md-5 mb-4 rounded bg-white border">
+        <div class="px-0">
+            <h1 class="display-6">Section C: Q-LESS Discount Definitions</h1>
+            <form [formGroup]="createTransportCardForm">
+                <div class="row">
+                    <mat-form-field class="w-25 pt-2">
+                        <mat-label>Senior Citizen Id</mat-label>
+                        <input type="text" matInput formControlName="SeniorCitizenId" placeholder="Senior Citizen Id" />    
+                        <mat-error *ngIf="createTransportCardForm.get('SeniorCitizenId')?.hasError('required')">This field is required</mat-error>
+                        <mat-error *ngIf="createTransportCardForm.get('SeniorCitizenId')?.hasError('minlength')">Minimum length is 10</mat-error>
+                        <mat-error *ngIf="createTransportCardForm.get('SeniorCitizenId')?.hasError('maxlength')">Maximum length is 10</mat-error>
+                    </mat-form-field>
+                    <div style="height:5px; display: block;"></div>
+                </div>
+                <div class="row">
+                    <mat-form-field class="w-25 pt-2">
+                        <mat-label>Pwd Id</mat-label>
+                        <input type="text" matInput formControlName="PwdId" placeholder="Pwd Id" />    
+                        <mat-error *ngIf="createTransportCardForm.get('PwdId')?.hasError('required')">This field is required</mat-error>
+                        <mat-error *ngIf="createTransportCardForm.get('PwdId')?.hasError('minlength')">Minimum length is 12</mat-error>
+                        <mat-error *ngIf="createTransportCardForm.get('PwdId')?.hasError('maxlength')">Maximum length is 12</mat-error>
+                    </mat-form-field>
+                    <div style="height:5px; display: block;"></div>
+                </div>
+                <button (click)="postTransportCard()" type="submit" class="btn btn-outline-success">Create Transport Card</button>
+            </form>
+            <div style="height:30px; display: block;"></div>
+                <div class="row">
+                    <ng-container *ngIf="(transportCardDataLists | async)?.isSuccess">
+                        <table class="table table-hover border">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Senior Citizen Id</th>
+                                <th scope="col">Pwd Id</th>
+                                <th scope="col">Load Amount</th>
+                                <th scope="col">Created Date</th>
+                                <th scope="col">Expiration Date</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Total Entries Today</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let transportCard of (transportCardDataLists | async)?.data">
+                                <th scope="row">{{ transportCard.id }}</th>
+                                <td>{{ transportCard.seniorCitizenId }}</td>
+                                <td>{{ transportCard.pwdId }}</td>
+                                <td>{{ transportCard.loadAmount | currency: 'PHP' }}</td>
+                                <td>{{ transportCard.createdDate | date: 'longDate'}}</td>
+                                <td>{{ transportCard.expirationDate | date: 'longDate'}}</td>
+                                <td>{{ transportCard.isInside ? 'Inside' : 'Outside' }}</td>
+                                <td>{{ transportCard.entryCount }}</td>
+                                <td>
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-outline-primary" (click)="open(transportCard, content)">
+                                            <span>Use Transport Card</span>
+                                        </button>
+                                    </div>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <mat-paginator [length]="dataTableRows"  [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 100]" [showFirstLastButtons]="true" (page)="getTransportCard($event)"></mat-paginator>
+                    </ng-container>
+                </div>
+        </div>
+    </div>
+</main> 
+
+<ng-template #content let-modal>
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Transport Card Form</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="transportCardForm">
+    <div>
+        <div class="row">
+            <div class="col-6">
+                <mat-form-field class="w-100 pt-2">
+                    <mat-label>Transport Card Id</mat-label>
+                    <input type="number" matInput formControlName="TransportCardId" readonly="true"/>      
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field class="w-100 pt-2">
+                    <mat-label>Current Load Amount</mat-label>
+                    <input type="number" matInput formControlName="CurrentLoadAmount" readonly="true"/>      
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row" *ngIf="transportCardDetails.isInside == false">
+            <mat-form-field class="w-50 pt-2">
+                <mat-label>Load Amount</mat-label>
+                <input type="number" matInput formControlName="AddLoadAmount" placeholder="0" />    
+                <span matPrefix>₱&nbsp;</span>
+                <mat-error *ngIf="transportCardForm.get('AddLoadAmount')?.hasError('required')">This field is required</mat-error>
+                <mat-error *ngIf="transportCardForm.get('AddLoadAmount')?.hasError('min')">Minimum value is 100</mat-error>
+                <mat-error *ngIf="transportCardForm.get('AddLoadAmount')?.hasError('max')">Maximum value is 1000</mat-error>
+            </mat-form-field>
+            <div style="height:5px; display: block;"></div>
+        </div>
+        </div>
+        <div style="height:50px; display: block;" *ngIf="transportCardDetails.isInside == false">
+        <button type="submit" (click)="addLoadAmount()" class="btn btn-outline-dark">Add Load Amount</button>
+        </div>
+        <div style="height:50px; display: block;" *ngIf="transportCardDetails.isInside == false">
+        <button type="submit" (click)="enterStation()" class="btn btn-outline-success">Enter Station</button>
+        </div>
+        <div style="height:50px; display: block;" *ngIf="transportCardDetails.isInside == true">
+        <button type="submit" (click)="exitStation()" class="btn btn-outline-danger">Exit Station</button>
+        </div>
+    </form>
+</div>
+</ng-template>
